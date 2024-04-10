@@ -1,5 +1,6 @@
 package com.alibou.book.user;
 
+import com.alibou.book.role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +10,15 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -23,7 +28,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "_user")
 @EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails {
+public class User implements UserDetails, Principal {
 
         @Id
         @GeneratedValue
@@ -47,12 +52,17 @@ public class User implements UserDetails {
         private LocalDateTime lastModifiedDate;
 
         // private list of Role for our users
+        @ManyToMany(fetch = FetchType.EAGER)
+        private List<Role> roles;  // will create a list of user with roles to check for user
 
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.roles
+                .stream()
+                .map(r ->  new SimpleGrantedAuthority(r.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -87,5 +97,10 @@ public class User implements UserDetails {
 
     private String fullName(){
         return firstname + " " +  lastname;
+    }
+
+    @Override
+    public String getName() {
+        return email;
     }
 }
