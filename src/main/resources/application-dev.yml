@@ -12,7 +12,7 @@ spring:
       hibernate:
         format_sql: true
     database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
     host: localhost
@@ -30,3 +30,15 @@ spring:
         timeout: 3000
         writetimeout: 5000
 
+# For best practices, we need to store our secrete key
+# in the app yml file for security reasons.
+application:
+  security:
+    jwt:
+      secret-key: ULyJQmjWnjwC8a0j6cp8CtI/lbFMSeciKjlgyiESbvYJWol8VaQHuKxpNT3AXLQU
+      expiration: 8640000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+server:
+  port: 8088

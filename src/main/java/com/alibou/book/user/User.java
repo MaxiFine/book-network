@@ -30,38 +30,37 @@ import java.util.stream.Collectors;
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
 
-        @Id
-        @GeneratedValue
-        private Integer id;
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-        private String firstname;
-        private String lastname;
-        private LocalDate dateOfBirth;
-        @Column(unique = true)
-        private String email;
-        private String password;
-        private boolean accountLocked;
-        private boolean enabled;
+    private String firstname;
+    private String lastname;
+    private LocalDate dateOfBirth;
+    @Column(unique = true)
+    private String email;
+    private String password;
+    private boolean accountLocked;
+    private boolean enabled;
 
-        // we want to know when the user registered
-        @CreatedDate
-        @Column(nullable = false, updatable = false)
-        private LocalDateTime createdDate;
-        @LastModifiedDate
-        @Column(insertable = false)
-        private LocalDateTime lastModifiedDate;
+    // we want to know when the user registered
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime lastModifiedDate;
 
-        // private list of Role for our users
-        @ManyToMany(fetch = FetchType.EAGER)
-        private List<Role> roles;  // will create a list of user with roles to check for user
-
+    // private list of Role for our users
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles;  // will create a list of user with roles to check for user
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles
                 .stream()
-                .map(r ->  new SimpleGrantedAuthority(r.getName()))
+                .map(r -> new SimpleGrantedAuthority(r.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -95,12 +94,13 @@ public class User implements UserDetails, Principal {
         return enabled;
     }
 
-    private String fullName(){
-        return firstname + " " +  lastname;
+    public String fullName() {
+        return firstname + " " + lastname;
     }
 
     @Override
     public String getName() {
         return email;
     }
+
 }
