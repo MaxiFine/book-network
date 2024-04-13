@@ -9,6 +9,12 @@ spring:
 springdoc:
   default-produces-media-type: application/json
 
+application:
+  security:
+    jwt:
+      secret-key: "ULyJQmjWnjwC8a0j6cp8CtI/lbFMSeciKjlgyiESbvYJWol8VaQHuKxpNT3AXLQU"
+      expiration: 8640000
+
 
 server:
   servlet:

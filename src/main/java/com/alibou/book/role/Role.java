@@ -31,7 +31,7 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     @JsonIgnore   // will prevent it from being serialized as a response
-    private List<User> roles;
+    private List<User> users;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
