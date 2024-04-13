@@ -1,2 +1,20 @@
-package com.alibou.book.handler;public class ExceptionResponse {
+package com.alibou.book.handler;
+
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class ExceptionResponse {
+
+    private Integer businessErrorCode;
+    private String businessExceptionDescription;
+    private String error;
+    private Set<String> validationError;
+    private  Map<String, String> errors;
 }
