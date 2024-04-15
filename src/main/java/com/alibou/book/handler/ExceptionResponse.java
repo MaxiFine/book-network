@@ -4,6 +4,9 @@ package com.alibou.book.handler;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.util.Map;
+import java.util.Set;
+
 @Getter
 @Setter
 @Builder
@@ -16,5 +19,5 @@ public class ExceptionResponse {
     private String businessExceptionDescription;
     private String error;
     private Set<String> validationError;
-    private  Map<String, String> errors;
+    private Map<String, String> errors;
 }
