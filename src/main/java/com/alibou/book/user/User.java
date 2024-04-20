@@ -51,7 +51,7 @@ public class User implements UserDetails, Principal {
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
 
-    // private list of Role for our users
+    // private list of Roles for users
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;  // will create a list of user with roles to check for user
 

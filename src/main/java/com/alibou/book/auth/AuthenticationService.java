@@ -67,7 +67,6 @@ public class AuthenticationService {
                 "Account Activation"
 
         );
-
     }
 
     private String  generateAndSaveActivationToken(User user) {

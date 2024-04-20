@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.function.Function;
 
@@ -31,9 +31,6 @@ public class JwtService {
      * THis service will be used to handle all processes
      * to handle jwt token
      * */
-    public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(), userDetails);
-    }
 
     public String generateToken(Map<String, Object> claims, UserDetails userDetails){
         return buildToken(claims, userDetails, jwtExpiration);
