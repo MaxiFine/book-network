@@ -21,17 +21,17 @@ import java.net.http.HttpHeaders;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
-@RequiredArgsConstructor
+
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
     private final UserDetailsService userDetailsService;
 
-//    public JwtFilter(JwtService jwtService, UserDetailsService userDetailsService) {
-//        this.jwtService = jwtService;
-//        this.userDetailsService = userDetailsService;
-//    }
+    public JwtFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
            @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         // making checks on the endpoints that comes into our
-        // service
+        // service with this path will have no checks
         if (request.getServletPath().contains("/api/v1/auth")){
             filterChain.doFilter(request, response);
         }

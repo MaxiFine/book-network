@@ -1,11 +1,10 @@
 package com.alibou.book.user;
 
+import com.alibou.book.book.Book;
+import com.alibou.book.history.BookTransactionHistory;
 import com.alibou.book.role.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,7 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -51,9 +51,16 @@ public class User implements UserDetails, Principal {
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
 
-    // private list of Role for our users
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles;  // will create a list of user with roles to check for user
+    private List<Role> roles;
+
+    // One user can have many books
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+    // association btn user and book history
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> histories;
 
 
     @Override

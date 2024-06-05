@@ -11,22 +11,21 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Tag("Authentication")
+//@Tag("Authentication")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> register(
-            @RequestBody @Valid RegistrationRequest request
-    ) throws MessagingException {
+    //@ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<?> register(@RequestBody @Valid RegistrationRequest request) throws MessagingException {
+        System.out.println("Hello Register");
         authenticationService.register(request);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    //@ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<AuthenticationResponse> login(
             @RequestBody @Valid AuthenticationRequest request
     ) {

@@ -3,6 +3,7 @@ package com.alibou.book.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,13 +32,18 @@ public class BeansConfig {
 
     }
 
-    @Bean
+    @Bean  // for providing authentication details for user for authentication purposes
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
         return configuration.getAuthenticationManager();
     }
 
-    @Bean
+    @Bean  // for password encoding
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean  // for spring to identify which user is doing what
+    public AuditorAware<Integer> auditorAware(){
+        return new ApplicationAuditAware();
     }
 }

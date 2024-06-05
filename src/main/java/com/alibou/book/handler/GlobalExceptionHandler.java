@@ -7,7 +7,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashSet;
@@ -26,7 +25,7 @@ public class GlobalExceptionHandler {
                 .body(
                         ExceptionResponse.builder()
                                 .businessErrorCode(ACCOUNT_LOCKED.getCode())
-                                .businessExceptionDescription(ACCOUNT_LOCKED.getDescription())
+                                .businessErrorDescription(ACCOUNT_LOCKED.getDescription())
                                 .error(exp.getMessage())
                                 .build()
                 );
@@ -39,7 +38,7 @@ public class GlobalExceptionHandler {
                 .body(
                         ExceptionResponse.builder()
                                 .businessErrorCode(ACCOUNT_DISABLED.getCode())
-                                .businessExceptionDescription(ACCOUNT_DISABLED.getDescription())
+                                .businessErrorDescription(ACCOUNT_DISABLED.getDescription())
                                 .error(exp.getMessage())
                                 .build()
                 );
@@ -52,8 +51,8 @@ public class GlobalExceptionHandler {
                 .body(
                         ExceptionResponse.builder()
                                 .businessErrorCode(BAD_CREDENTIALS.getCode())
-                                .businessExceptionDescription(BAD_CREDENTIALS.getDescription())
-                                .error(BAD_CREDENTIALS.getDescription())
+                                .businessErrorDescription(BAD_CREDENTIALS.getDescription())
+                                .error(exp.getMessage())
                                 .build()
                 );
     }
@@ -93,7 +92,7 @@ public class GlobalExceptionHandler {
                 .status(INTERNAL_SERVER_ERROR)
                 .body(
                         ExceptionResponse.builder()
-                                .businessExceptionDescription("Internal error, contact the admin")
+                                .businessErrorDescription("Internal error, contact the admin")
                                 .error(exp.getMessage())
                                 .build()
                 );

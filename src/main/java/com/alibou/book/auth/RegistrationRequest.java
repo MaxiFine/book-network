@@ -1,16 +1,14 @@
 package com.alibou.book.auth;
 
+import com.alibou.book.roleperms.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
 @Setter
+@Getter
 @Builder
 public class RegistrationRequest {
 
@@ -28,4 +26,5 @@ public class RegistrationRequest {
     @NotBlank(message = "You must set Password")
     @Size(min = 8,  message = "Password should be 8 characters long minimum")
     private String password;
+    private Role role;
 }

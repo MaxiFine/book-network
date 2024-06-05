@@ -10,7 +10,6 @@ import com.alibou.book.user.TokenRepository;
 import com.alibou.book.user.User;
 import com.alibou.book.user.UserRepository;
 import jakarta.mail.MessagingException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,20 +35,20 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private AuthenticationManager authenticationManager;
 
-    @Value("http://localhost:4200/activate-account")
+    @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
 
     public void register(RegistrationRequest request) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new IllegalStateException("ROLE USER was not Initializes"));
+                .orElseThrow(() -> new IllegalStateException("ROLE USER was not Initialized..."));
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .accountLocked(false)
-                .roles(List.of(userRole))
                 .enabled(false)
+                .roles(List.of(userRole))
                 .build();
         userRepository.save(user);
         sendValidationEmail(user);
@@ -70,7 +69,7 @@ public class AuthenticationService {
 
     }
 
-    private String  generateAndSaveActivationToken(User user) {
+    public String  generateAndSaveActivationToken(User user) {
         String generatedToken = generateActivationCode(6);
         var token = Token.builder()
                 .token(generatedToken)
@@ -87,7 +86,7 @@ public class AuthenticationService {
         StringBuilder codeBuilder = new StringBuilder();
         SecureRandom secureRandom = new SecureRandom();
         for (int i = 0; i < length; i++){
-            int randomIndex = secureRandom.nextInt(characters.length());
+            int randomIndex = secureRandom.nextInt(characters.length());  // from 0 to 9
             codeBuilder.append(characters.charAt(randomIndex));
         }
         return codeBuilder.toString();
@@ -108,14 +107,13 @@ public class AuthenticationService {
                 .token(jwtToken).build();
     }
 
-    //@Transactional
+
     public void activateAccount(String token) throws MessagingException {
         Token savedToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid token"));
         if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())){
             sendValidationEmail(savedToken.getUser());
-            throw new RuntimeException(
-                    "Activation token has expired, A new token has been sent to email address");
+            throw new RuntimeException("Activation token has expired, A new token has been sent to email address");
         }
         var user = userRepository.findById(savedToken.getUser().getId())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
