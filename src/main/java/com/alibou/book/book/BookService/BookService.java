@@ -3,6 +3,8 @@ package com.alibou.book.book.BookService;
 
 import com.alibou.book.book.Book;
 import com.alibou.book.common.PageResponse;
+import com.alibou.book.history.BookTransactionHistory;
+import com.alibou.book.history.BookTransactionRepository;
 import com.alibou.book.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookTransactionRepository bookTransactionRepository;
     private final BookMapper bookMapper;
 
     public Integer save(BookRequest request, Authentication connectedUser){
@@ -69,5 +72,22 @@ public class BookService {
                 books.getTotalPages(),
                 books.isFirst(),
                 books.isLast());
+    }
+
+    public PageResponse<BorrowedBookResponse> findAllBorrowedBooks(int page, int size, Authentication connectedUser) {
+        User user = ((User) connectedUser.getPrincipal());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> allBorrowedBooks = bookTransactionRepository.findAllBorrowedBooks(pageable, user.getId());
+        List<BorrowedBookResponse> bookResponses = allBorrowedBooks.stream()
+                .map(bookMapper::toBorrowedBookResponse)
+                .toList();
+        return new PageResponse<>(
+                bookResponses,
+                allBorrowedBooks.getNumber(),
+                allBorrowedBooks.getSize(),
+                allBorrowedBooks.getTotalElements(),
+                allBorrowedBooks.getTotalPages(),
+                allBorrowedBooks.isFirst(),
+                allBorrowedBooks.isLast());
     }
 }

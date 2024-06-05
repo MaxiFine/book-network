@@ -1,10 +1,7 @@
 package com.alibou.book.book;
 
 
-import com.alibou.book.book.BookService.BookRepository;
-import com.alibou.book.book.BookService.BookRequest;
-import com.alibou.book.book.BookService.BookResponse;
-import com.alibou.book.book.BookService.BookService;
+import com.alibou.book.book.BookService.*;
 import com.alibou.book.common.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +43,15 @@ public class BookController {
             @RequestParam(name = "size", defaultValue = "15", required = false) int size,
             Authentication connectedUser){
         return ResponseEntity.ok(bookService.findAllBooksByOwner(page, size, connectedUser));
+    }
+
+    // find all borrowed books
+    @GetMapping("/borrowed")
+    public ResponseEntity<PageResponse<BorrowedBookResponse>> findAllBorrowedBooksController(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "15", required = false) int size,
+            Authentication connectedUser){
+        return ResponseEntity.ok(bookService.findAllBorrowedBooks(page, size, connectedUser));
     }
 
 }
