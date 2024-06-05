@@ -1,58 +1,74 @@
 package com.alibou.book.user;
 
+import com.alibou.book.book.Book;
+import com.alibou.book.history.BookTransactionHistory;
+import com.alibou.book.role.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "_user")
 @EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails {
+public class User implements UserDetails, Principal {
 
-        @Id
-        @GeneratedValue
-        private Integer id;
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-        private String firstname;
-        private String lastname;
-        private LocalDate dateOfBirth;
-        @Column(unique = true)
-        private String email;
-        private String password;
-        private boolean accountLocked;
-        private boolean enabled;
+    private String firstname;
+    private String lastname;
+    private LocalDate dateOfBirth;
+    @Column(unique = true)
+    private String email;
+    private String password;
+    private boolean accountLocked;
+    private boolean enabled;
 
-        // we want to know when the user registered
-        @CreatedDate
-        @Column(nullable = false, updatable = false)
-        private LocalDateTime createdDate;
-        @LastModifiedDate
-        @Column(insertable = false)
-        private LocalDateTime lastModifiedDate;
+    // we want to know when the user registered
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime lastModifiedDate;
 
-        // private list of Role for our users
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles;
 
+    // One user can have many books
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+    // association btn user and book history
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> histories;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.roles
+                .stream()
+                .map(r -> new SimpleGrantedAuthority(r.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -85,7 +101,13 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    private String fullName(){
-        return firstname + " " +  lastname;
+    public String fullName() {
+        return firstname + " " + lastname;
     }
+
+    @Override
+    public String getName() {
+        return email;
+    }
+
 }
