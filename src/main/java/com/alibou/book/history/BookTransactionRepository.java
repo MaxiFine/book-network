@@ -11,10 +11,19 @@ import java.util.List;
 
 @Repository
 public interface BookTransactionRepository extends JpaRepository<BookTransactionRepository, Integer> {
-    @Query("""
+    // finds all the books borrowed by the user
+    @Query("""  
             SELECT history
             FROM BookTransactionHistory  history
             WHERE history.user.id = :userId
             """)
     Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable, Integer userId);
+
+    // finds all books returned by the user
+    @Query("""
+            SELECT history
+            FROM BookTransactionHistory  history
+            WHERE history.book.owner.id = :userId
+            """)
+    Page<BookTransactionHistory> findAllReturnedBooks(Pageable pageable, Integer userId);
 }
