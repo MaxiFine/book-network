@@ -10,13 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -25,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public class Book extends BaseEntity{
 
     private String title;
@@ -62,7 +57,8 @@ public class Book extends BaseEntity{
                 .mapToDouble(Feedback::getNote)
                 .average()
                 .orElse(0.0);
-        double roundedRate = Math.round(rate * 10.0) / 10.0;
+        double roundedRate;
+        roundedRate = Math.round(rate * 10.0) / 10.0;
         return roundedRate;
     }
 
