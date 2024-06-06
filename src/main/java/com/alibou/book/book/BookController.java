@@ -5,9 +5,11 @@ import com.alibou.book.book.BookService.*;
 import com.alibou.book.common.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/book")
@@ -100,6 +102,15 @@ public class BookController {
         return ResponseEntity.ok(bookService.approveReturnBorrowedBook(bookId, connectedUser));
     }
 
+    // uploading a file to our file system
+    @PostMapping(value = "/cover/{bookId}", consumes = "miultipart/form-data")
+    public ResponseEntity<?> uploadBookCoverPicture(
+            @PathVariable("bookId") Integer bookId,
+            @RequestPart("file")MultipartFile file,
+            Authentication connectedUser){
+        bookService.uploadBookCoverPicture(file, connectedUser, bookId);
+        return ResponseEntity.accepted().build();
+    }
 
 
 }

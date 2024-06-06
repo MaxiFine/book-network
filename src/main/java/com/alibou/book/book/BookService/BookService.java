@@ -4,6 +4,7 @@ package com.alibou.book.book.BookService;
 import com.alibou.book.book.Book;
 import com.alibou.book.common.PageResponse;
 import com.alibou.book.exceptions.OperationNotPermittedException;
+import com.alibou.book.file.FileStorageService;
 import com.alibou.book.history.BookTransactionHistory;
 import com.alibou.book.history.BookTransactionRepository;
 import com.alibou.book.user.User;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookTransactionRepository bookTransactionRepository;
     private final BookMapper bookMapper;
+    private final FileStorageService fileStorageService;
 
     public Integer save(BookRequest request, Authentication connectedUser){
         User user = ((User) connectedUser.getPrincipal());
@@ -194,5 +197,14 @@ public class BookService {
                 .orElseThrow(() -> new OperationNotPermittedException(("The book is not returned yet. You cannot approve its return.")));
         bookTransactionHistory.setReturnedApproved(true);
         return bookTransactionRepository.save(bookTransactionHistory).getId();
+    }
+
+    public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
+        User user = ((User) connectedUser.getPrincipal());
+        var bookCover = fileStorageService.saveFile(file, user.getId());
+        book.setBookCover(bookCover);
+        bookRepository.save(book);
     }
 }
