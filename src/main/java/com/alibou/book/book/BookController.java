@@ -73,7 +73,7 @@ public class BookController {
     }
 
     // update archive status
-    @PatchMapping("/shareable/{book-id}")
+    @PatchMapping("/archive/{book-id}")
     public ResponseEntity<Integer> updateArchiveStatus(
             @PathVariable("book-id") Integer bookId,
             Authentication connectedUser){
@@ -103,7 +103,7 @@ public class BookController {
     }
 
     // uploading a file to our file system
-    @PostMapping(value = "/cover/{bookId}", consumes = "miultipart/form-data")
+    @PostMapping(value = "/cover/{bookId}", consumes = "multipart/form-data")
     public ResponseEntity<?> uploadBookCoverPicture(
             @PathVariable("bookId") Integer bookId,
             @RequestPart("file")MultipartFile file,
